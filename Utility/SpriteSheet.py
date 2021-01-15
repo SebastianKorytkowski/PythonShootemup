@@ -10,14 +10,22 @@ class SpriteSheet:
         self.images = []
 
         single_sprite_width = int(self.sheet.get_width() / width)
-        single_sprite_height = int(self.sheet.get_width() / width)
+        single_sprite_height = int(self.sheet.get_height() / height)
 
-        for x in range(0, width):
-            startx = x * (single_sprite_width)
-            for y in range(0, height):
-                starty = y * (single_sprite_height)
-                rect = (startx, starty, single_sprite_width, single_sprite_width)
+        print(single_sprite_width)
+        print(single_sprite_height)
+
+        for y in range(0, height):
+            starty = y * single_sprite_height
+            for x in range(0, width):
+                startx = x * single_sprite_width
+                rect = (startx, starty, single_sprite_width, single_sprite_height)
                 self.images.append(self.image_at(rect))
+
+        print(filename + " " + str(len(self.images)))
+
+    def get_at_pos(self, x, y):
+        return self.images[y*self.width+x]
 
     def image_at(self, rectangle):
         rect = pygame.Rect(rectangle)
