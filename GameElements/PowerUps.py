@@ -11,7 +11,7 @@ class GunUp(Animation):
         Animation.__init__(self, sprite_sheet, center=position, loop=True, frames_per_frame=10)
 
     def on_pickup(self, player: Player):
-        player.gun.gun_type.upgrade()
+        player.gun.upgrade(1)
 
 
 class HealthUp(Animation):

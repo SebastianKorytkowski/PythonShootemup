@@ -38,7 +38,10 @@ class Game:
         self.camera_shake = 0
 
         #GUI
-        self.hp_bar = Bar(pygame.Rect(5, 5, 50, 10))
+        self.hp_bar = Bar(pygame.Rect(5, 5, 64, 10))
+
+    def shakeCamera(self, intensity):
+        self.camera_shake = abs(self.camera_shake + intensity)
 
     def addEnemy(self, new_enemy):
         self.enemies.add(new_enemy)
@@ -89,6 +92,7 @@ class Game:
         for entity in self.all_sprites:
             self.fake_screen.blit(entity.surf, entity.rect)
 
+        self.hp_bar.set_progress(self.player.hp/self.player.max_hp)
         self.hp_bar.draw(self.fake_screen)
 
         self.screen.blit(pygame.transform.scale(self.fake_screen, self.screen.get_rect().size), (self.camera_shake, 0))
@@ -109,23 +113,23 @@ class Game:
             # Check if enemy is hit by a bullet
             for bullet in self.player_bullets:
                 if bullet.rect.colliderect(enemy.rect):
-                    if enemy.damage(bullet.get_dmg()):  # Enemy has died from this bullet
-                        self.spawnExplosion(enemy.rect.center)
-                        Globals.resourceManager.get_sound("explosion.wav").play()
-                        self.camera_shake = 2
-
-                        self.powerups.add(HealthUp(enemy.rect.center))
-
+                    enemy.damage(bullet.get_dmg())
                     bullet.kill()
                     Globals.resourceManager.get_sound("hit.wav").play()
-                    self.camera_shake = 1
+                    self.shakeCamera(1)
             # Check if enemy is hit by the player
-            if self.player.rect.colliderect(enemy.rect):
-                self.spawnExplosion(enemy.rect.center)
-                Globals.resourceManager.get_sound("explosion.wav").play()
-                enemy.kill()
-                self.camera_shake = 5
-                self.player.gun.gun_type += 1
+            if not self.player.is_invincible() and self.player.rect.colliderect(enemy.rect):
+                self.player.damage(25)
+                enemy.damage(25)
+                self.shakeCamera(5)
+
+        if not self.player.is_invincible():
+            for enemy_bullet in self.enemy_bullets:
+                if self.player.rect.colliderect(enemy_bullet.rect):
+                    self.player.damage(enemy_bullet.get_dmg())
+                    enemy_bullet.kill()
+                    Globals.resourceManager.get_sound("hit.wav").play()
+                    self.shakeCamera(5)
 
     def start(self):
 

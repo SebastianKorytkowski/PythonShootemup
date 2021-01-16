@@ -15,7 +15,16 @@ class Damageable:
 
     def damage(self, dmg):
         self.hp -= dmg
+        self.on_damage(dmg)
         if self.hp <= 0:
+            self.hp = 0
             self.kill()
+            self.on_death()
             return True
         return False
+
+    def on_death(self):
+        pass
+
+    def on_damage(self, dmg):
+        pass

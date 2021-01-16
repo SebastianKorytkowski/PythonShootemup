@@ -2,9 +2,9 @@ import Globals
 
 
 class Gun:
-    def __init__(self, gun_type = 0):
+    def __init__(self, gun_type=0, shoot_delay=5):
         self.shoot_previous_frame = 0
-        self.shoot_delay_frames = 5
+        self.shoot_delay_frames = shoot_delay
         self.gun_type = gun_type
 
     def upgrade(self, levels):
@@ -18,11 +18,10 @@ class Gun:
         if Globals.game.current_frame - self.shoot_previous_frame > self.shoot_delay_frames:
             self.shoot_previous_frame = Globals.game.current_frame
 
-            speed = 5
             if is_player:
-                dir = -speed
+                dir = -4
             else:
-                dir = speed
+                dir = 3
 
             nr_of_bullets = self.gun_type % 3 + 1
             bullet_type = int(self.gun_type/3)

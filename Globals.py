@@ -18,5 +18,6 @@ def initialize():
     resourceManager.load_sprite_sheet("rocket.png", 2, 1)
 
     resourceManager.load_sprite_sheet("healthup.png", 2, 1)
+    resourceManager.load_sprite_sheet("gunup.png", 2, 1)
 
     game = Game()

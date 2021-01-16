@@ -9,7 +9,7 @@ class SpriteSheet:
 
         self.images = []
 
-        single_sprite_width = int(self.sheet.get_width() / width)
+        single_sprite_width = int(self.sheet.get_width() / self.width)
         single_sprite_height = int(self.sheet.get_height() / height)
 
         print(single_sprite_width)
@@ -23,6 +23,12 @@ class SpriteSheet:
                 self.images.append(self.image_at(rect))
 
         print(filename + " " + str(len(self.images)))
+
+    def get_width(self):
+        return self.sheet.get_width() / self.width
+
+    def get_height(self):
+        return self.sheet.get_height() / self.height
 
     def get_at_pos(self, x, y):
         return self.images[y*self.width+x]

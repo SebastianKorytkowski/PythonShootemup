@@ -1,7 +1,7 @@
 import random
 
 import Globals
-from GameElements.AnimatedEnemy import AnimatedEnemy
+from GameElements.Enemies.AnimatedEnemy import AnimatedEnemy
 
 class Level:
 
@@ -19,6 +19,8 @@ class Level:
             Globals.game.addBackground(self.background).rect.top = y
             y += self.background.get_height()
 
+    def random_x(self, width):
+        return random.randint(width, Globals.game.screen_size[0] - width)
 
     def Update(self):
         frame = Globals.game.current_frame
@@ -29,11 +31,8 @@ class Level:
         if frame % 500 == 0:
             Globals.game.addForeground(self.cloud)
 
-        if frame % 100 == 0:
-            Globals.game.addEnemy(AnimatedEnemy(self.enemy1, (random.randint(0, Globals.game.screen_size[0]), 0)))
-
-        if frame % 120 == 0:
-            Globals.game.addEnemy(AnimatedEnemy(self.enemy2, (random.randint(0, Globals.game.screen_size[0]), 0)))
+        if frame % 60 == 0:
+            Globals.game.addEnemy(AnimatedEnemy(self.enemy1, (self.random_x(self.enemy1.get_width()),0)))
 
 
 

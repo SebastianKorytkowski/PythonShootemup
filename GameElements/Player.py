@@ -1,4 +1,3 @@
-import Globals
 from GameElements.Bullet import *
 
 from pygame.locals import (
@@ -8,16 +7,15 @@ from pygame.locals import (
     K_RIGHT,
 )
 
-from GameElements.Damageable import Damageable
+from GameElements.BaseClasses.Damageable import Damageable
 from GameElements.Gun import Gun
+from GameElements.BaseClasses.PhysicsBase import PhysicsBase
 
 
-class Player(pygame.sprite.Sprite, Damageable):
+class Player(pygame.sprite.Sprite, Damageable, PhysicsBase):
     def __init__(self, center=None):
         pygame.sprite.Sprite.__init__(self)
         Damageable.__init__(self, 100)
-
-        self.speed_vector = [0, 0]
 
         self.acceleration = 1
         self.inertia = 0.69
@@ -28,12 +26,24 @@ class Player(pygame.sprite.Sprite, Damageable):
 
         self.animationCounter = 0
 
+        self.invincibility_till_frame = 60
+
+        self.speed = pygame.Vector2(0, 0)
         self.setFrame()
         self.rect = self.surf.get_rect(center=center)
 
-    def setFrame(self):
+        PhysicsBase.__init__(self)
 
-        dir = self.speed_vector[0]/self.max_speed
+        self.invisible_surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
+        self.invisible_surf.fill((255,255,255, 0))
+
+    def setFrame(self):
+        # Make player flash when invincible
+        if self.is_invincible() and Globals.game.current_frame % 2==0:
+            self.surf = self.invisible_surf
+            return
+
+        dir = self.speed.x / self.max_speed
 
         if dir < -0.5:
             anim_dir = 0
@@ -50,22 +60,35 @@ class Player(pygame.sprite.Sprite, Damageable):
     def clamp(self, x, a, b):
         return max(a, min(x, b))
 
+    def is_invincible(self):
+        if Globals.game is None:
+            return False
+        return Globals.game.current_frame <= self.invincibility_till_frame
+
+    def on_damage(self, dmg):
+        # Give invincibility for 30 frames after getting dmg
+        self.invincibility_till_frame = Globals.game.current_frame+30
+
     def update(self, screen_rect, pressed_keys):
 
-        input = [0, 0]
+        input = pygame.Vector2(0, 0)
         if pressed_keys[K_UP]:
-            input[1] -= 1
+            input.y -= 1
         if pressed_keys[K_DOWN]:
-            input[1] += 1
+            input.y += 1
         if pressed_keys[K_LEFT]:
-            input[0] -= 1
+            input.x -= 1
         if pressed_keys[K_RIGHT]:
-            input[0] += 1
+            input.x += 1
 
-        self.speed_vector[0] = self.clamp(input[0] * self.acceleration + self.speed_vector[0] * self.inertia, -self.max_speed, self.max_speed)
-        self.speed_vector[1] = self.clamp(input[1] * self.acceleration + self.speed_vector[1] * self.inertia, -self.max_speed, self.max_speed)
+        self.speed.x = self.clamp(input.x * self.acceleration + self.speed.x * self.inertia,
+                                          -self.max_speed, self.max_speed)
+        self.speed.y = self.clamp(input.y * self.acceleration + self.speed.y * self.inertia,
+                                          -self.max_speed, self.max_speed)
 
-        self.rect.move_ip(self.speed_vector[0], self.speed_vector[1])
+
+
+        self.update_physics()
 
         self.setFrame()
         if Globals.game.current_frame % 10 == 0:
@@ -78,6 +101,7 @@ class Player(pygame.sprite.Sprite, Damageable):
         if pressed_keys[pygame.K_SPACE]:
             self.gun.shoot((self.rect.centerx, self.rect.top), True)
 
-
         # Don't let player move outside of the map
-        self.rect.clamp_ip(screen_rect)
+        if not screen_rect.contains(self.rect):
+            self.rect.clamp_ip(screen_rect)
+            self.pos = pygame.math.Vector2(self.rect.center)
