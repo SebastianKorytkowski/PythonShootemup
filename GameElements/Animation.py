@@ -32,6 +32,13 @@ class Animation(pygame.sprite.Sprite):
     def nextFrame(self):
         self.setFrame(self.current_frame+1)
 
-    def update(self):
+    def updateAnim(self):
         if Globals.game.current_frame % self.frames_per_frame == 0:
             self.nextFrame()
+
+    def update(self, move, screen_rect):
+        self.updateAnim()
+
+        self.rect.move_ip(0, move)
+        if not self.rect.colliderect(screen_rect):
+            self.kill()

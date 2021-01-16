@@ -8,18 +8,23 @@ from pygame.locals import (
     K_RIGHT,
 )
 
+from GameElements.Damageable import Damageable
+from GameElements.Gun import Gun
 
-class Player(pygame.sprite.Sprite):
+
+class Player(pygame.sprite.Sprite, Damageable):
     def __init__(self, center=None):
-        super(Player, self).__init__()
+        pygame.sprite.Sprite.__init__(self)
+        Damageable.__init__(self, 100)
 
-        self.shoot_previous_frame = 0
-        self.shoot_delay_frames = 5
         self.speed_vector = [0, 0]
 
         self.acceleration = 1
         self.inertia = 0.69
-        self.maxspeed = 5
+        self.max_speed = 5
+
+        self.gun = Gun()
+        self.hp = 100
 
         self.animationCounter = 0
 
@@ -28,7 +33,7 @@ class Player(pygame.sprite.Sprite):
 
     def setFrame(self):
 
-        dir = self.speed_vector[0]/self.maxspeed
+        dir = self.speed_vector[0]/self.max_speed
 
         if dir < -0.5:
             anim_dir = 0
@@ -57,8 +62,8 @@ class Player(pygame.sprite.Sprite):
         if pressed_keys[K_RIGHT]:
             input[0] += 1
 
-        self.speed_vector[0] = self.clamp(input[0]*self.acceleration + self.speed_vector[0] * self.inertia, -self.maxspeed, self.maxspeed)
-        self.speed_vector[1] = self.clamp(input[1]*self.acceleration + self.speed_vector[1] * self.inertia, -self.maxspeed, self.maxspeed)
+        self.speed_vector[0] = self.clamp(input[0] * self.acceleration + self.speed_vector[0] * self.inertia, -self.max_speed, self.max_speed)
+        self.speed_vector[1] = self.clamp(input[1] * self.acceleration + self.speed_vector[1] * self.inertia, -self.max_speed, self.max_speed)
 
         self.rect.move_ip(self.speed_vector[0], self.speed_vector[1])
 
@@ -71,11 +76,7 @@ class Player(pygame.sprite.Sprite):
 
         # Let player shoot bullets!
         if pressed_keys[pygame.K_SPACE]:
-            if Globals.game.current_frame - self.shoot_previous_frame > self.shoot_delay_frames:
-                self.shoot_previous_frame = Globals.game.current_frame
-                new_bullet = Bullet((0, -5), (self.rect.centerx, self.rect.top), bullet_type=0)
-                Globals.game.addPlayerBullet(new_bullet)
-                Globals.resourceManager.get_sound("shot-heavy.wav").play()
+            self.gun.shoot((self.rect.centerx, self.rect.top), True)
 
 
         # Don't let player move outside of the map

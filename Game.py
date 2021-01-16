@@ -3,6 +3,8 @@ from pygame import VIDEORESIZE, HWSURFACE, DOUBLEBUF, RESIZABLE
 from GameElements.Animation import Animation
 from GameElements.Player import *
 from GameElements.Background import *
+from GameElements.PowerUps import HealthUp
+from Gui.Bar import Bar
 from Level import *
 
 import random
@@ -25,15 +27,18 @@ class Game:
         self.all_sprites.add(self.player)
 
         self.enemies = pygame.sprite.Group()
-
         self.background = pygame.sprite.Group()
         self.foreground = pygame.sprite.Group()
         self.effects = pygame.sprite.Group()
+        self.powerups = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
         self.player_bullets = pygame.sprite.Group()
 
         self.current_frame = 0
         self.camera_shake = 0
+
+        #GUI
+        self.hp_bar = Bar(pygame.Rect(5, 5, 50, 10))
 
     def addEnemy(self, new_enemy):
         self.enemies.add(new_enemy)
@@ -54,12 +59,11 @@ class Game:
         self.foreground.add(new_foreground)
         return new_foreground
 
-    def addPlayerBullet(self, bullet):
-        self.player_bullets.add(bullet)
-        self.all_sprites.add(bullet)
-
-    def addEnemyBullet(self, bullet):
-        self.enemy_bullets.add(bullet)
+    def addBullet(self, bullet, player=True):
+        if player:
+            self.player_bullets.add(bullet)
+        else:
+            self.enemy_bullets.add(bullet)
         self.all_sprites.add(bullet)
 
     def setScale(self, scale):
@@ -79,34 +83,49 @@ class Game:
         for entity in self.effects:
             self.fake_screen.blit(entity.surf, entity.rect)
 
+        for entity in self.powerups:
+            self.fake_screen.blit(entity.surf, entity.rect)
+
         for entity in self.all_sprites:
             self.fake_screen.blit(entity.surf, entity.rect)
 
-        self.screen.blit(pygame.transform.scale(self.fake_screen, self.screen.get_rect().size), (self.camera_shake,0))
+        self.hp_bar.draw(self.fake_screen)
+
+        self.screen.blit(pygame.transform.scale(self.fake_screen, self.screen.get_rect().size), (self.camera_shake, 0))
         self.camera_shake = -self.camera_shake / 2
 
         pygame.display.flip()
 
     def check_collisions(self):
 
+        for powerup in self.powerups:
+            # Check if player picked up a powerup
+            if self.player.rect.colliderect(powerup.rect):
+                powerup.on_pickup(self.player)
+                powerup.kill()
+                Globals.resourceManager.get_sound("powerup.wav").play()
+
         for enemy in self.enemies:
+            # Check if enemy is hit by a bullet
             for bullet in self.player_bullets:
                 if bullet.rect.colliderect(enemy.rect):
-                    if enemy.damage(4):# Enemy has died from this bullet
+                    if enemy.damage(bullet.get_dmg()):  # Enemy has died from this bullet
                         self.spawnExplosion(enemy.rect.center)
                         Globals.resourceManager.get_sound("explosion.wav").play()
                         self.camera_shake = 2
+
+                        self.powerups.add(HealthUp(enemy.rect.center))
+
                     bullet.kill()
                     Globals.resourceManager.get_sound("hit.wav").play()
                     self.camera_shake = 1
-
+            # Check if enemy is hit by the player
             if self.player.rect.colliderect(enemy.rect):
                 self.spawnExplosion(enemy.rect.center)
                 Globals.resourceManager.get_sound("explosion.wav").play()
                 enemy.kill()
                 self.camera_shake = 5
-
-
+                self.player.gun.gun_type += 1
 
     def start(self):
 
@@ -130,16 +149,21 @@ class Game:
             screen_rect = self.fake_screen.get_rect()
             pressed_keys = pygame.key.get_pressed()
 
+            # update player and his bullets
             self.player.update(screen_rect, pressed_keys)
             self.player_bullets.update(screen_rect)
 
+            # update enemies and their bullets
             self.enemies.update(screen_rect)
             self.enemy_bullets.update(screen_rect)
 
+            # move backgrounds
             self.background.update(move, screen_rect)
-            self.foreground.update(move * 2, screen_rect)
 
-            self.effects.update()
+            # move foreground
+            self.foreground.update(move * 2, screen_rect)
+            self.effects.update(move * 2, screen_rect)
+            self.powerups.update(move * 2, screen_rect)
 
             self.check_collisions()
 

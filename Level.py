@@ -6,7 +6,7 @@ from GameElements.AnimatedEnemy import AnimatedEnemy
 class Level:
 
     def __init__(self):
-        self.background = Globals.resourceManager.get_image("1.png")
+        self.background = Globals.resourceManager.get_image("2.png")
         self.cloud = Globals.resourceManager.get_image("cloud.png")
 
         self.enemy1 = Globals.resourceManager.get_sprite_sheet("enemy1.png")
