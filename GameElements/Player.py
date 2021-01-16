@@ -18,8 +18,8 @@ class Player(pygame.sprite.Sprite):
         self.speed_vector = [0, 0]
 
         self.acceleration = 1
-        self.inertia = 0.65
-        self.maxspeed = 4
+        self.inertia = 0.69
+        self.maxspeed = 5
 
         self.animationCounter = 0
 
@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
             anim_dir = 3
         else:
             anim_dir = 4
-        self.surf = Globals.spriteManager.get_sprite_sheet("ship.png").get_at_pos(anim_dir, self.animationCounter)
+        self.surf = Globals.resourceManager.get_sprite_sheet("ship.png").get_at_pos(anim_dir, self.animationCounter)
 
     def clamp(self, x, a, b):
         return max(a, min(x, b))
@@ -73,8 +73,9 @@ class Player(pygame.sprite.Sprite):
         if pressed_keys[pygame.K_SPACE]:
             if Globals.game.current_frame - self.shoot_previous_frame > self.shoot_delay_frames:
                 self.shoot_previous_frame = Globals.game.current_frame
-                new_bullet = Bullet((0, -3), (self.rect.centerx, self.rect.top), bullet_type=Globals.game.current_frame%4)
+                new_bullet = Bullet((0, -5), (self.rect.centerx, self.rect.top), bullet_type=0)
                 Globals.game.addPlayerBullet(new_bullet)
+                Globals.resourceManager.get_sound("shot-heavy.wav").play()
 
 
         # Don't let player move outside of the map

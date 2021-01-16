@@ -1,16 +1,20 @@
 from Game import *
-from Utility.SpriteManager import *
+from Utility.ResourceManager import *
 
 game = None
-spriteManager = None
+resourceManager = None
 
 def initialize():
     global game
-    global spriteManager
-    spriteManager = SpriteManager("Sprites/")
+    global resourceManager
+    resourceManager = ResourceManager("Sprites/", "Sounds/")
 
-    spriteManager.load_sprite_sheet("explosion.png", 5, 1)
-    spriteManager.load_sprite_sheet("laser-bolts.png", 2, 2)
-    spriteManager.load_sprite_sheet("ship.png", 5, 2)
+    resourceManager.load_sprite_sheet("explosion.png", 5, 1)
+    resourceManager.load_sprite_sheet("laser-bolts.png", 2, 2)
+    resourceManager.load_sprite_sheet("ship.png", 5, 2)
+    resourceManager.load_sprite_sheet("enemy1.png", 2, 1)
+    resourceManager.load_sprite_sheet("enemy2.png", 2, 1)
+    resourceManager.load_sprite_sheet("enemy3.png", 2, 2)
+    resourceManager.load_sprite_sheet("rocket.png", 2, 1)
 
     game = Game()

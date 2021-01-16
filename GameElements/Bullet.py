@@ -10,7 +10,7 @@ class Bullet(pygame.sprite.Sprite):
         if bullet_type <= 0 or bullet_type > 3:
             bullet_type = 0
 
-        self.surf = Globals.spriteManager.get_sprite_sheet("laser-bolts.png").images[bullet_type]
+        self.surf = Globals.resourceManager.get_sprite_sheet("laser-bolts.png").images[bullet_type]
 
         self.rect = self.surf.get_rect(center=center)
         self.speed = speed
