@@ -21,7 +21,7 @@ class Player(pygame.sprite.Sprite, Damageable, PhysicsBase):
         self.inertia = 0.69
         self.max_speed = 5
 
-        self.gun = Gun()
+        self.gun = Gun(bullet_speed=5)
         self.hp = 100
 
         self.animationCounter = 0
@@ -100,7 +100,7 @@ class Player(pygame.sprite.Sprite, Damageable, PhysicsBase):
 
         # Let player shoot bullets!
         if pressed_keys[pygame.K_SPACE]:
-            self.gun.shoot((self.rect.centerx, self.rect.top), True)
+            self.gun.shoot(self, True)
 
         # Don't let player move outside of the map
         if not screen_rect.contains(self.rect):

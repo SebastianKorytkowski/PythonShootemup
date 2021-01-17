@@ -8,11 +8,11 @@ from GameElements.Enemies.EnemyAI import *
 
 
 class AnimatedEnemy(Animation, Damageable, PhysicsBase):
-    def __init__(self, sprite_sheet, ai, center=None, hp=10, max_speed=2):
+    def __init__(self, sprite_sheet, ai, center=None, hp=10, max_speed=2, guns=[Gun(shoot_delay=30)]):
         Animation.__init__(self, sprite_sheet, center=center)
         Damageable.__init__(self, hp)
 
-        self.gun = Gun(shoot_delay=30)
+        self.guns = guns
         self.max_speed = max_speed
         self.ai = ai
 
@@ -24,9 +24,10 @@ class AnimatedEnemy(Animation, Damageable, PhysicsBase):
     def update(self, screen_rect):
         self.updateAnim()
 
-        self.gun.shoot((self.rect.centerx, self.rect.bottom), False)
+        for gun in self.guns:
+            gun.shoot(self, False)
 
-        self.speed = self.ai.move_direction(self)*self.max_speed
+        self.speed = (self.speed*5.0 + self.ai.move_direction(self)*self.max_speed)/7.0
 
         self.update_physics()
         if not self.rect.colliderect(screen_rect):
