@@ -15,6 +15,7 @@ class Animation(pygame.sprite.Sprite):
 
         self.setFrame(0)
         self.rect = self.surf.get_rect(center=center)
+        self.mask = pygame.mask.from_surface(self.surf)
 
     def setFrame(self, nr):
         self.current_frame = nr

@@ -100,6 +100,10 @@ class Game:
 
         pygame.display.flip()
 
+    @staticmethod
+    def pixel_perfect_collision(s1, s2):
+        return s1.rect.colliderect(s2) and pygame.sprite.collide_mask(s1, s2)
+
     def check_collisions(self):
 
         for powerup in self.powerups:
@@ -112,20 +116,21 @@ class Game:
         for enemy in self.enemies:
             # Check if enemy is hit by a bullet
             for bullet in self.player_bullets:
-                if bullet.rect.colliderect(enemy.rect):
+                if self.pixel_perfect_collision(bullet, enemy):
                     enemy.damage(bullet.get_dmg())
                     bullet.kill()
                     Globals.resourceManager.get_sound("hit.wav").play()
                     self.shakeCamera(1)
             # Check if enemy is hit by the player
-            if not self.player.is_invincible() and self.player.rect.colliderect(enemy.rect):
+            if not self.player.is_invincible() and self.pixel_perfect_collision(self.player, enemy):
                 self.player.damage(25)
                 enemy.damage(25)
+                Globals.resourceManager.get_sound("hit.wav").play()
                 self.shakeCamera(5)
 
         if not self.player.is_invincible():
             for enemy_bullet in self.enemy_bullets:
-                if self.player.rect.colliderect(enemy_bullet.rect):
+                if self.pixel_perfect_collision(self.player, enemy_bullet):
                     self.player.damage(enemy_bullet.get_dmg())
                     enemy_bullet.kill()
                     Globals.resourceManager.get_sound("hit.wav").play()

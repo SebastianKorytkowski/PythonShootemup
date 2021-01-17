@@ -8,12 +8,12 @@ from GameElements.Enemies.EnemyAI import *
 
 
 class AnimatedEnemy(Animation, Damageable, PhysicsBase):
-    def __init__(self, sprite_sheet, center=None, hp=10, ai=EnemyAIFollow()):
+    def __init__(self, sprite_sheet, ai, center=None, hp=10, max_speed=2):
         Animation.__init__(self, sprite_sheet, center=center)
         Damageable.__init__(self, hp)
 
         self.gun = Gun(shoot_delay=30)
-        self.max_speed = 2
+        self.max_speed = max_speed
         self.ai = ai
 
         # make sure enemy is hidden at the start

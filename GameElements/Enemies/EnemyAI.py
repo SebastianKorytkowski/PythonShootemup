@@ -17,7 +17,7 @@ class EnemyAIFollow:
 
         if diff.y > 100:
             return pygame.Vector2(diff.x, 50).normalize()
-        elif enemy.speed.x>0.0:
+        elif enemy.speed.x > 0.0:
             enemy.ai = EnemyAILine((1, 1))
         else:
             enemy.ai = EnemyAILine((-1, 1))

@@ -17,6 +17,7 @@ class Bullet(pygame.sprite.Sprite):
             self.surf = Globals.resourceManager.get_sprite_sheet("laser-bolts.png").images[4+bullet_type]
 
         self.rect = self.surf.get_rect(center=center)
+        self.mask = pygame.mask.from_surface(self.surf)
         self.speed = speed
         self.bullet_type = bullet_type
 

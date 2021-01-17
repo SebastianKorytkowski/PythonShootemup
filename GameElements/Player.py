@@ -31,6 +31,7 @@ class Player(pygame.sprite.Sprite, Damageable, PhysicsBase):
         self.speed = pygame.Vector2(0, 0)
         self.setFrame()
         self.rect = self.surf.get_rect(center=center)
+        self.mask = pygame.mask.from_surface(self.surf)
 
         PhysicsBase.__init__(self)
 
