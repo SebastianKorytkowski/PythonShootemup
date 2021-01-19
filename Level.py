@@ -2,7 +2,7 @@ import random
 
 import Globals
 import pygame
-from GameElements.Enemies.AnimatedEnemy import AnimatedEnemy, Gun
+from GameElements.Enemies.AnimatedEnemy import AnimatedEnemy, Gun, Bullets
 from GameElements.Enemies.EnemyAI import *
 
 
@@ -35,7 +35,8 @@ class Level:
 
         self.enemies = [Globals.resourceManager.get_sprite_sheet("enemy1.png"),
                         Globals.resourceManager.get_sprite_sheet("enemy2.png"),
-                        Globals.resourceManager.get_sprite_sheet("enemy3.png")]
+                        Globals.resourceManager.get_sprite_sheet("enemy3.png"),
+                        Globals.resourceManager.get_sprite_sheet("rocket.png")]
         self.level_progress = 0
         self.stage = None
 
@@ -66,8 +67,11 @@ class Level:
             return AnimatedEnemy(self.enemies[2], EnemyAIHover(), (posx, 0), hp=690, max_speed=0.5,
                                  guns=[
                                      Gun(gun_type=9, shoot_delay=30, bullet_speed=6, special_offset=(-0.45, 0.95)),
-                                     Gun(gun_type=9, shoot_delay=30, bullet_speed=6, special_offset=(0.45, 0.95))
+                                     Gun(gun_type=9, shoot_delay=30, bullet_speed=6, special_offset=(0.45, 0.95)),
+                                     Gun(gun_type=Bullets.ROCKET, shoot_delay=360, special_offset=(0, 0))
                                  ])
+        elif enemy_id == 3:
+            return AnimatedEnemy(self.enemies[3], EnemyAISuicide(), (posx, 0), max_speed=3, hp=20,guns=[])
         else:
             return None
 
@@ -105,15 +109,15 @@ class Level:
         return Stage([self.create_enemy(0, 30), self.create_enemy(0, Globals.game.screen_size[0]/2), self.create_enemy(0, Globals.game.screen_size[0]-30)])
 
     def Stage3(self):
-        return Stage([self.create_enemy(1)])
+        return Stage([self.create_enemy(1)], continue_after=None)
 
     def Stage4(self):
         return Stage([self.create_enemy(0, 30), self.create_enemy(0, Globals.game.screen_size[0]/2), self.create_enemy(0, Globals.game.screen_size[0]-30),
-                      self.create_enemy(1)])
+                      self.create_enemy(1)], continue_after=None)
 
     def Stage5(self):
         return Stage([self.create_enemy(2, Globals.game.screen_size[0] / 2)], continue_after=None)
 
     def Stage6(self):
         return Stage([self.create_enemy(0, 30), self.create_enemy(2, Globals.game.screen_size[0] / 2), self.create_enemy(0, Globals.game.screen_size[0]-30),
-                      self.create_enemy(1)])
+                      self.create_enemy(1)], continue_after=None)

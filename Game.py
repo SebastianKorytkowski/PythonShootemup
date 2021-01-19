@@ -123,8 +123,8 @@ class Game:
                     self.shakeCamera(1)
             # Check if enemy is hit by the player
             if not self.player.is_invincible() and self.pixel_perfect_collision(self.player, enemy):
-                self.player.damage(25)
-                enemy.damage(25)
+                self.player.damage(50)
+                enemy.damage(50)
                 Globals.resourceManager.get_sound("hit.wav").play()
                 self.shakeCamera(5)
 

@@ -1,5 +1,12 @@
+import pygame
+from enum import Enum
+
 import Globals
 
+class Bullets(Enum):
+    STARING_BULLET = 1
+    MAX_BULLET = 4*3
+    ROCKET = 64
 
 class Gun:
     def __init__(self, gun_type=0, shoot_delay=5, bullet_speed=3, special_offset=None,):
@@ -15,6 +22,11 @@ class Gun:
     def __spawnBullet(self, direction, position, bullet_type, is_player):
         new_bullet = Globals.Bullet(direction, position, bullet_type=bullet_type, is_player=is_player)
         Globals.game.addBullet(new_bullet, player=is_player)
+
+    def __spawnRocket(self, position):
+        new_rocket = Globals.game.level.create_enemy(3);
+        new_rocket.pos = pygame.Vector2(position)
+        Globals.game.addEnemy(new_rocket)
 
     def shoot(self, shooter, is_player):
         if Globals.game.current_frame - self.shoot_previous_frame > self.shoot_delay_frames:
@@ -35,6 +47,10 @@ class Gun:
             else:
                 position[0] += (shooter.rect.width  / 2)*self.special_offset[0]
                 position[1] += (shooter.rect.height / 2)*self.special_offset[1]
+
+            if self.gun_type == Bullets.ROCKET:
+                self.__spawnRocket(position)
+                return
 
             nr_of_bullets = self.gun_type % 3 + 1
             bullet_type = int(self.gun_type/3)
