@@ -67,7 +67,7 @@ class Player(DrawableSprite, Damageable, PhysicsBase):
 
     def on_damage(self, dmg):
         # Give invincibility for 30 frames after getting dmg
-        self.invincibility_till_frame = Globals.window.current_frame + 30
+        self.invincibility_till_frame = Globals.window.current_frame + 10
 
     def on_death(self):
         Globals.window.change_game_state(GameOverState(Globals.window.game_state))

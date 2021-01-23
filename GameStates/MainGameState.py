@@ -1,5 +1,3 @@
-from pygame import VIDEORESIZE, HWSURFACE, DOUBLEBUF, RESIZABLE
-
 from GameElements.BaseClasses.DrawableAnimation import Animation
 from GameElements.Player import *
 from GameElements.Background import *
@@ -20,6 +18,7 @@ class MainGameState(GameState):
         self.level = Level(self)
 
         self.score = 0
+        self.smooth_score = 0
 
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
@@ -117,12 +116,14 @@ class MainGameState(GameState):
 
         if self.player.is_alive():
             move = self.level.Update()
-            # update player and his bullets
+            # update player
             pressed_keys = pygame.key.get_pressed()
             self.player.update(screen_rect, pressed_keys)
-            self.player_bullets.update(screen_rect)
         else:
             move = self.level.Update(player_alive=False)
+
+        # and his bullets
+        self.player_bullets.update(screen_rect)
 
         # update enemies and their bullets
         self.enemies.update(screen_rect)
@@ -155,7 +156,15 @@ class MainGameState(GameState):
         for entity in self.all_sprites:
             entity.draw(screen)
         # sync and draw gui
-        self.score_text.set_text("SCORE: " + str(self.score))
+
+        if self.smooth_score < self.score:
+            diff = self.score - self.smooth_score
+            if diff > 60:
+                self.smooth_score += int(diff/3)
+            else:
+                self.smooth_score += 1
+
+        self.score_text.set_text("SCORE: " + str(self.smooth_score))
         self.hp_bar.set_progress(self.player.hp / self.player.max_hp)
         for entity in self.gui:
             entity.draw(screen)

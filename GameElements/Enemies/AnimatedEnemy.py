@@ -42,5 +42,7 @@ class AnimatedEnemy(Animation, Damageable, PhysicsBase):
         if random.uniform(0, 1) > 0.95:
             Globals.game.powerups.add(GunUp(self.rect.center))
 
+        Globals.game.score += self.max_hp*self.max_hp;
+
         Globals.window.shakeCamera(5)
         Globals.resourceManager.get_sound("explosion.wav").play()
