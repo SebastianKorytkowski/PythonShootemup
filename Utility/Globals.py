@@ -1,12 +1,15 @@
-from Game import *
+from Window import Window
 from Utility.ResourceManager import *
 
+window = None
 game = None
 resourceManager = None
 
 def initialize():
-    global game
+    global window
     global resourceManager
+    global game
+
     resourceManager = ResourceManager("Sprites/", "Sounds/")
 
     resourceManager.load_sprite_sheet("explosion.png", 5, 1)
@@ -20,4 +23,4 @@ def initialize():
     resourceManager.load_sprite_sheet("healthup.png", 2, 1)
     resourceManager.load_sprite_sheet("gunup.png", 2, 1)
 
-    game = Game()
+    window = Window()

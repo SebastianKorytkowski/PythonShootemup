@@ -8,6 +8,9 @@ class Damageable:
         else:
             self.hp = self.max_hp
 
+    def is_alive(self):
+        return self.hp > 0
+
     def heal(self, heal):
         self.hp += heal
         if self.hp > self.max_hp:

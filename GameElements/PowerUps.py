@@ -1,7 +1,5 @@
-import pygame
-
-import Globals
-from GameElements.Animation import Animation
+from Utility import Globals
+from GameElements.BaseClasses.DrawableAnimation import Animation
 from GameElements.Player import Player
 
 

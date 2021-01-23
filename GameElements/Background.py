@@ -1,11 +1,11 @@
 import pygame
 
-import Globals
+from GameElements.BaseClasses.DrawableSprite import DrawableSprite
 
 
-class Background(pygame.sprite.Sprite):
+class Background(DrawableSprite):
     def __init__(self, image):
-        super(Background, self).__init__()
+        DrawableSprite.__init__(self)
         self.surf = image
 
         self.rect = self.surf.get_rect()

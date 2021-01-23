@@ -1,6 +1,6 @@
 import pygame
 
-import Globals
+from Utility import Globals
 
 
 class Animation(pygame.sprite.Sprite):
@@ -34,7 +34,7 @@ class Animation(pygame.sprite.Sprite):
         self.setFrame(self.current_frame+1)
 
     def updateAnim(self):
-        if Globals.game.current_frame % self.frames_per_frame == 0:
+        if Globals.window.current_frame % self.frames_per_frame == 0:
             self.nextFrame()
 
     def update(self, move, screen_rect):
@@ -43,3 +43,6 @@ class Animation(pygame.sprite.Sprite):
         self.rect.move_ip(0, move)
         if not self.rect.colliderect(screen_rect):
             self.kill()
+
+    def draw(self, surface):
+        surface.blit(self.surf, self.rect)

@@ -1,6 +1,5 @@
 import pygame
-import random
-import Globals
+from Utility import Globals
 
 
 class EnemyAILine:

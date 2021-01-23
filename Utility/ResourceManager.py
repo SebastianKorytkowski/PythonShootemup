@@ -9,6 +9,7 @@ class ResourceManager:
         self.spriteSheets = dict()
         self.images = dict()
         self.sounds = dict()
+        self.fonts = dict()
         self.spiteFolder = spriteFolder
         self.soundFolder = soundFolder
 
@@ -34,3 +35,11 @@ class ResourceManager:
             image.set_colorkey((0, 0, 0), RLEACCEL)
             self.images[filename] = image
             return image
+
+    def get_font(self, filename, size):
+        try:
+            return self.fonts[(filename, size)]
+        except KeyError:
+            font = pygame.freetype.Font(filename, size)
+            self.fonts[(filename, size)] = font
+            return font

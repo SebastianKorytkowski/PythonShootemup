@@ -10,11 +10,12 @@ from pygame.locals import (
 from GameElements.BaseClasses.Damageable import Damageable
 from GameElements.Gun import Gun
 from GameElements.BaseClasses.PhysicsBase import PhysicsBase
+from GameStates.GameOverState import GameOverState
 
 
-class Player(pygame.sprite.Sprite, Damageable, PhysicsBase):
+class Player(DrawableSprite, Damageable, PhysicsBase):
     def __init__(self, center=None):
-        pygame.sprite.Sprite.__init__(self)
+        DrawableSprite.__init__(self)
         Damageable.__init__(self, 100)
 
         self.acceleration = 1
@@ -36,11 +37,11 @@ class Player(pygame.sprite.Sprite, Damageable, PhysicsBase):
         PhysicsBase.__init__(self)
 
         self.invisible_surf = pygame.Surface((self.rect.width, self.rect.height), pygame.SRCALPHA)
-        self.invisible_surf.fill((255,255,255, 0))
+        self.invisible_surf.fill((255, 255, 255, 0))
 
     def setFrame(self):
         # Make player flash when invincible
-        if self.is_invincible() and Globals.game.current_frame % 2==0:
+        if self.is_invincible() and Globals.window.current_frame % 2 == 0 and Globals.window.current_frame != 0:
             self.surf = self.invisible_surf
             return
 
@@ -62,13 +63,14 @@ class Player(pygame.sprite.Sprite, Damageable, PhysicsBase):
         return max(a, min(x, b))
 
     def is_invincible(self):
-        if Globals.game is None:
-            return False
-        return Globals.game.current_frame <= self.invincibility_till_frame
+        return Globals.window.current_frame <= self.invincibility_till_frame
 
     def on_damage(self, dmg):
         # Give invincibility for 30 frames after getting dmg
-        self.invincibility_till_frame = Globals.game.current_frame+30
+        self.invincibility_till_frame = Globals.window.current_frame + 30
+
+    def on_death(self):
+        Globals.window.change_game_state(GameOverState(Globals.window.game_state))
 
     def update(self, screen_rect, pressed_keys):
 
@@ -83,16 +85,14 @@ class Player(pygame.sprite.Sprite, Damageable, PhysicsBase):
             input.x += 1
 
         self.speed.x = self.clamp(input.x * self.acceleration + self.speed.x * self.inertia,
-                                          -self.max_speed, self.max_speed)
+                                  -self.max_speed, self.max_speed)
         self.speed.y = self.clamp(input.y * self.acceleration + self.speed.y * self.inertia,
-                                          -self.max_speed, self.max_speed)
-
-
+                                  -self.max_speed, self.max_speed)
 
         self.update_physics()
 
         self.setFrame()
-        if Globals.game.current_frame % 10 == 0:
+        if Globals.window.current_frame % 10 == 0:
             if self.animationCounter == 0:
                 self.animationCounter = 1
             else:

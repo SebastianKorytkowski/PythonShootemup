@@ -1,11 +1,13 @@
-import pygame
-import Globals
+from Utility import Globals
 from Utility.SpriteSheet import *
 
+from GameElements.BaseClasses.DrawableSprite import DrawableSprite
 
-class Bullet(pygame.sprite.Sprite):
+
+class Bullet(DrawableSprite):
     def __init__(self, speed, center=None, bullet_type=0, is_player=False):
-        super(Bullet, self).__init__()
+        DrawableSprite.__init__(self)
+
 
         if is_player:
             if bullet_type <= 0 or bullet_type > 3:
@@ -14,7 +16,7 @@ class Bullet(pygame.sprite.Sprite):
         else:
             if bullet_type <= 0 or bullet_type > 3:
                 bullet_type = 0
-            self.surf = Globals.resourceManager.get_sprite_sheet("laser-bolts.png").images[4+bullet_type]
+            self.surf = Globals.resourceManager.get_sprite_sheet("laser-bolts.png").images[4 + bullet_type]
 
         self.rect = self.surf.get_rect(center=center)
         self.mask = pygame.mask.from_surface(self.surf)

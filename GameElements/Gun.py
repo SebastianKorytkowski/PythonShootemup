@@ -1,7 +1,9 @@
 import pygame
 from enum import Enum
 
-import Globals
+from GameElements.Bullet import Bullet
+from Utility import Globals
+
 
 class Bullets(Enum):
     STARING_BULLET = 1
@@ -20,7 +22,7 @@ class Gun:
         self.gun_type += levels
 
     def __spawnBullet(self, direction, position, bullet_type, is_player):
-        new_bullet = Globals.Bullet(direction, position, bullet_type=bullet_type, is_player=is_player)
+        new_bullet = Bullet(direction, position, bullet_type=bullet_type, is_player=is_player)
         Globals.game.addBullet(new_bullet, player=is_player)
 
     def __spawnRocket(self, position):
@@ -29,8 +31,8 @@ class Gun:
         Globals.game.addEnemy(new_rocket)
 
     def shoot(self, shooter, is_player):
-        if Globals.game.current_frame - self.shoot_previous_frame > self.shoot_delay_frames:
-            self.shoot_previous_frame = Globals.game.current_frame
+        if Globals.window.current_frame - self.shoot_previous_frame > self.shoot_delay_frames:
+            self.shoot_previous_frame = Globals.window.current_frame
 
             position = list(shooter.rect.center)
 
