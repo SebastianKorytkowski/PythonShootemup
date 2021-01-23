@@ -17,6 +17,7 @@ class AnimatedEnemy(Animation, Damageable, PhysicsBase):
         self.guns = guns
         self.max_speed = max_speed
         self.ai = ai
+        self.start_frame = Globals.window.current_frame
 
         PhysicsBase.__init__(self)
 
@@ -36,13 +37,18 @@ class AnimatedEnemy(Animation, Damageable, PhysicsBase):
         for i in range(0, random.randint(1, 3)):
             Globals.game.spawnExplosion((random.uniform(self.rect.left, self.rect.right), (random.uniform(self.rect.top, self.rect.bottom))))
 
-        if random.uniform(0.0, 1.0) > 0.9:
-            Globals.game.powerups.add(HealthUp(self.rect.center))
+        #only spawn hp if player isn't max hp
+        if Globals.game.player.hp < Globals.game.player.max_hp:
+            if random.uniform(0.0, 1.0) > 0.9:
+                Globals.game.powerups.add(HealthUp(self.rect.center))
 
-        if random.uniform(0, 1) > 0.95:
-            Globals.game.powerups.add(GunUp(self.rect.center))
+        #only spawn gunup if player isn't max hp
+        if Globals.game.player.gun.gun_type<4*3-1:
+            if random.uniform(0, 1) > 0.91:
+                Globals.game.powerups.add(GunUp(self.rect.center))
 
-        Globals.game.score += self.max_hp*self.max_hp;
+        frames = max(5, (Globals.window.current_frame-self.start_frame))
+        Globals.game.score += int(max(self.max_hp*self.max_hp - frames*frames/10, self.max_hp))
 
         Globals.window.shakeCamera(5)
         Globals.resourceManager.get_sound("explosion.wav").play()

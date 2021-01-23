@@ -54,6 +54,9 @@ class Gun:
                 self.__spawnRocket(position)
                 return
 
+            if self.gun_type>=4*3:
+                self.gun_type = 4*3-1
+
             nr_of_bullets = self.gun_type % 3 + 1
             bullet_type = int(self.gun_type/3)
 

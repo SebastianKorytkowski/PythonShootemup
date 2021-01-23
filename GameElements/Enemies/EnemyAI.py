@@ -28,8 +28,12 @@ class EnemyAIFlyby:
 
 
 class EnemyAIHover:
+    def __init__(self, offsetx=0):
+        self.offsetx = offsetx
+
     def move_direction(self, enemy):
         diff = Globals.game.player.pos - enemy.pos
+        diff.x += self.offsetx
 
         target = 20 + enemy.rect.height
         tolerance = 5

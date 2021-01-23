@@ -81,7 +81,7 @@ class Level:
             return AnimatedEnemy(self.enemies[1], EnemyAIHover(), (posx, 0), hp=40,
                                  guns=[Gun(gun_type=6, shoot_delay=60, bullet_speed=6)])
         elif enemy_id == 2:
-            return AnimatedEnemy(self.enemies[2], EnemyAIHover(), (posx, 0), hp=1000, max_speed=0.5,
+            return AnimatedEnemy(self.enemies[2], EnemyAIHover(-24), (posx, 0), hp=1000, max_speed=0.5,
                                  guns=[
                                      Gun(gun_type=9, shoot_delay=30, bullet_speed=6, special_offset=(-0.45, 0.95)),
                                      Gun(gun_type=9, shoot_delay=30, bullet_speed=6, special_offset=(0.45, 0.95)),
@@ -92,7 +92,7 @@ class Level:
         elif enemy_id == 4:
             return AnimatedEnemy(self.enemies[4], EnemyAIFlyby(), (posx, 0), max_speed=7, hp=5, guns=[Gun(shoot_delay=50, bullet_speed=10)])
         elif enemy_id == 5:
-            return AnimatedEnemy(self.enemies[5], EnemyAIBoss(), (posx, 0), max_speed=1, hp=5000,
+            return AnimatedEnemy(self.enemies[5], EnemyAIBoss(), (posx, 0), max_speed=1, hp=7500,
                                  guns=[
                                      Gun(gun_type=9, shoot_delay=30, bullet_speed=3, special_offset=(-0.08, 0.85)),
                                      Gun(gun_type=9, shoot_delay=30, bullet_speed=3, special_offset=(0.08, 0.85)),
