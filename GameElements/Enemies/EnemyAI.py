@@ -48,13 +48,12 @@ class EnemyAISuicide:
     def move_direction(self, enemy):
         diff = Globals.game.player.pos - enemy.pos
 
-
-        #if diff.magnitude_squared()>enemy.bomb_range:
+        # if diff.magnitude_squared()>enemy.bomb_range:
         if abs(diff.x) > 2.0:
             return pygame.Vector2(diff.x, 300).normalize()
         else:
             return pygame.Vector2(0, 1)
-        #else:
+        # else:
         #    # Commit suicide
         #    enemy.damage(enemy.hp)
         #    return pygame.Vector2(0, 0)
@@ -87,3 +86,25 @@ class EnemyAIFormation:
         else:
             enemy.ai = self.AI_on_target_death
             return pygame.Vector2(0, 0)
+
+
+class EnemyAIBoss:
+    def move_direction(self, enemy):
+        diff = Globals.game.player.pos - enemy.pos
+
+        target = 20 + enemy.rect.height
+        tolerance = 5
+
+        if diff.y < 0:
+            return pygame.Vector2(0, -4)
+        elif diff.y < 100 and enemy.pos.y > 10 and enemy.pos.y + enemy.rect.height + 50 < Globals.window.screen_size[1]:
+            return pygame.Vector2(diff.x, 2).normalize() + pygame.Vector2(0, 4)
+        else:
+            if enemy.pos.y < target - tolerance:
+                return pygame.Vector2(diff.x, 50).normalize()
+            elif enemy.pos.y > target + tolerance:
+                return pygame.Vector2(diff.x, -50).normalize()
+            elif abs(diff.x) > 2.0:
+                return pygame.Vector2(diff.x, 0).normalize()
+            else:
+                return pygame.Vector2(0, 0)

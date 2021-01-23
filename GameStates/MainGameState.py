@@ -114,13 +114,13 @@ class MainGameState(GameState):
     def update(self):
         screen_rect = Globals.window.fake_screen.get_rect()
 
-        if self.player.is_alive():
+        if Globals.window.game_state is self:
             move = self.level.Update()
             # update player
             pressed_keys = pygame.key.get_pressed()
             self.player.update(screen_rect, pressed_keys)
         else:
-            move = self.level.Update(player_alive=False)
+            move = self.level.Update(game_not_paused=False)
 
         # and his bullets
         self.player_bullets.update(screen_rect)

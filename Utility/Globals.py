@@ -18,6 +18,8 @@ def initialize():
     resourceManager.load_sprite_sheet("enemy1.png", 2, 1)
     resourceManager.load_sprite_sheet("enemy2.png", 2, 1)
     resourceManager.load_sprite_sheet("enemy3.png", 2, 1)
+    resourceManager.load_sprite_sheet("enemy4.png", 2, 1)
+    resourceManager.load_sprite_sheet("boss.png", 4, 1)
     resourceManager.load_sprite_sheet("rocket.png", 2, 1)
 
     resourceManager.load_sprite_sheet("healthup.png", 2, 1)
