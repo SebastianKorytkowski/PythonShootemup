@@ -18,6 +18,7 @@ class ResourceManager:
             return self.sounds[filename]
         except KeyError:
             sound = pygame.mixer.Sound(self.soundFolder + filename)
+            sound.set_volume(0.01)
             self.sounds[filename] = sound
             return sound
 
