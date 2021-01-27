@@ -9,7 +9,7 @@ class Window:
     def __init__(self):
         self.screen_size = (512, 600)
 
-        self.screen = pygame.display.set_mode(self.screen_size, HWSURFACE | DOUBLEBUF | RESIZABLE)
+        self.screen = pygame.display.set_mode(self.screen_size, HWSURFACE | DOUBLEBUF)
         self.fake_screen = self.screen.copy()
         self.running = False
         self.game_state = None
@@ -47,10 +47,6 @@ class Window:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     Globals.window.running = False
-                elif event.type == VIDEORESIZE:
-                    width, height = event.size
-                    scale = int(max((width / self.screen_size[0], height / self.screen_size[1]))) + 1
-                    self.setScale(scale)
 
             self.game_state.update()
             self.game_state.draw(self.fake_screen)
