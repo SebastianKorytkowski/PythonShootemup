@@ -42,7 +42,7 @@ class AnimatedEnemy(Animation, Damageable, PhysicsBase):
             if random.uniform(0.0, 1.0) > 0.9:
                 Globals.game.powerups.add(HealthUp(self.rect.center))
 
-        #only spawn gunup if player isn't max hp
+        #only spawn gunup if player isn't max gun up
         if Globals.game.player.gun.gun_type<4*3-1:
             if random.uniform(0, 1) > 0.91:
                 Globals.game.powerups.add(GunUp(self.rect.center))
